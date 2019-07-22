@@ -1,0 +1,203 @@
+{
+	"info": {
+		"_postman_id": "33bae9ea-3736-4b3a-9e9a-fbb8dbd94272",
+		"name": "Example global variable",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "first request",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "744adb0a-dd82-4f20-a983-d83125c9a623",
+						"exec": [
+							"pm.globals.set(\"example variable\", \"example saved\");",
+							"",
+							"// console.log('logging from first request pre-request', pm.globals.get(\"example variable\"));"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "ae4c0b31-f14d-4b6a-9cd4-d55ebc116a9f",
+						"exec": [
+							"// console.log('logging from first request test script', pm.globals.get(\"example variable\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://postman-echo.com/get?foo1=bar1&foo2=bar2",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "foo1",
+							"value": "bar1"
+						},
+						{
+							"key": "foo2",
+							"value": "bar2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "second request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d4a839d6-7ddd-4d50-b387-0df5d9075a72",
+						"exec": [
+							"// console.log('logging from second request test script', pm.globals.get(\"example variable\"));"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "757afba1-956c-45f9-a6bb-02a0171d1ba5",
+						"exec": [
+							"// console.log('logging from second request pre-request script', pm.globals.get(\"example variable\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://postman-echo.com/get?foo1=bar1&foo2=bar2",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "foo1",
+							"value": "bar1"
+						},
+						{
+							"key": "foo2",
+							"value": "bar2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "iterative request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d4a839d6-7ddd-4d50-b387-0df5d9075a72",
+						"exec": [
+							"console.log(pm.response.json().args.nextToPrint);",
+							"",
+							"if (pm.globals.get(\"mutatedArray\") && pm.globals.get(\"mutatedArray\").length > 0) {",
+							"    console.log(\"iterative test script: \", pm.globals.get(\"mutatedArray\"));",
+							"    postman.setNextRequest(\"iterative request\");",
+							"} else {",
+							"    postman.setNextRequest(null);",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "757afba1-956c-45f9-a6bb-02a0171d1ba5",
+						"exec": [
+							"let exampleArray = [1,2,3,4,5];",
+							"",
+							"let nextToPrint;",
+							"",
+							"if (pm.globals.get(\"mutatedArray\")) {",
+							"    let latestArray = pm.globals.get(\"mutatedArray\");",
+							"    nextToPrint = latestArray.pop();",
+							"    pm.globals.set(\"mutatedArray\", latestArray);",
+							"} else {",
+							"    nextToPrint = exampleArray.pop();",
+							"    pm.globals.set(\"mutatedArray\", exampleArray);",
+							"}",
+							"",
+							"console.log(\"logging from iterative request: \", nextToPrint);",
+							"pm.globals.set(\"toPrint\", nextToPrint);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://postman-echo.com/get?foo1=bar1&foo2=bar2&nextToPrint={{mutatedArray}}",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "foo1",
+							"value": "bar1"
+						},
+						{
+							"key": "foo2",
+							"value": "bar2"
+						},
+						{
+							"key": "nextToPrint",
+							"value": "{{mutatedArray}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
